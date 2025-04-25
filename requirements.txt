@@ -1,3 +1,4 @@
+pip freeze
 Flask
 flask-cors
 requests
