@@ -10,7 +10,7 @@ def chat():
     user_input = request.json['message']
 
     response = requests.post(
-        "http://localhost:11434/api/generate",
+        "https://your-llm-api.com/api/generate",
         json={
             "model": "gemma:2b",  # 👈 use the correct model name
             "prompt": user_input,
