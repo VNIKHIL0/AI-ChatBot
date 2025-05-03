@@ -1,4 +1,3 @@
-import os
 import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -6,33 +5,28 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
 @app.route('/')
 def home():
-    return "AI Chatbot Backend is running."
+    return "Ollama Chatbot is running."
 
 @app.route('/chat', methods=['POST'])
 def chat():
     user_input = request.json['message']
 
     response = requests.post(
-        "https://api.openai.com/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {OPENAI_API_KEY}",
-            "Content-Type": "application/json"
-        },
+        "http://localhost:11434/api/generate",
         json={
-            "model": "gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": user_input}]
+            "model": "gemma:2b",
+            "prompt": user_input,
+            "stream": False
         }
     )
 
     if response.status_code == 200:
-        output = response.json()['choices'][0]['message']['content']
+        output = response.json()['response']
         return jsonify({"response": output})
     else:
-        return jsonify({"response": "Error from OpenAI backend."}), response.status_code
+        return jsonify({"response": "Error from Ollama backend."}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
