@@ -1,0 +1,24 @@
+FROM ollama/ollama:latest as ollama
+
+FROM python:3.10-slim
+
+# Copy Ollama server
+COPY --from=ollama /ollama /ollama
+
+# Install Ollama dependencies
+RUN apt-get update && apt-get install -y curl libstdc++6 && rm -rf /var/lib/apt/lists/*
+
+# Create app folder
+WORKDIR /app
+
+# Copy Flask files
+COPY app.py requirements.txt ./
+
+# Install Flask dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Pull model in advance
+RUN /ollama/ollama pull gemma:2b
+
+# Start Ollama + Flask
+CMD /ollama/ollama serve & python app.py
