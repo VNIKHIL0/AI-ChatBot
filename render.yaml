@@ -1,9 +1,8 @@
 services:
   - type: web
-    name: flask-chatbot
-    runtime: python
-    buildCommand: ""
-    startCommand: py app.py
-    envVars:
-      - key: PORT
-        value: 10000
+    name: ollama-chatbot
+    env: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
